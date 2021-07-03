@@ -1,3 +1,3 @@
 #!/bin/bash
-perl m2elf.pl --in shellcode 
-./out 
+gcc  -m32 -o shellcode shellcode.c 
+./shellcode
