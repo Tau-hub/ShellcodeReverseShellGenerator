@@ -73,6 +73,7 @@ def write_payload(final_array):
         final_payload = ''
         for byte in final_array:
             final_payload += '\\x'+format(byte, '02x')
+        f.write(final_payload)
     print(f"Final payload={final_payload}\nSize={len(final_array)} bytes")
     try:
         pyperclip.copy(final_payload)
